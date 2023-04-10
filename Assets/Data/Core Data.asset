@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a93c1bff33871664d85afa775e8cbaa0, type: 3}
+  m_Name: Core Data
+  m_EditorClassIdentifier: 
+  characterStates:
+  - stateName: Neutral
+    index: 0
+    length: 0
+    loop: 1
+    blendRate: 0.1
+    frame: 60
+    currentTime: 0
+    currentState: 0
+    events:
+    - start: 0
+      end: 60
+      variable: 0.05
+      script: 3
+    attacks: []
+  - stateName: Jump
+    index: 0
+    length: 60
+    loop: 0
+    blendRate: 0.1
+    frame: 30
+    currentTime: 0
+    currentState: 0
+    events:
+    - start: 10
+      end: 10
+      variable: 0.2
+      script: 0
+    - start: 0
+      end: 60
+      variable: 0.05
+      script: 3
+    attacks: []
+  - stateName: Dash
+    index: 0
+    length: 0
+    loop: 0
+    blendRate: 0.1
+    frame: 0
+    currentTime: 0
+    currentState: 0
+    events:
+    - start: 0
+      end: 0
+      variable: 0.3
+      script: 1
+    attacks: []
+  - stateName: Slash
+    index: 0
+    length: 0
+    loop: 0
+    blendRate: 0.1
+    frame: 0
+    currentTime: 0
+    currentState: 0
+    events: []
+    attacks: []
+  - stateName: Dodge
+    index: 0
+    length: 0
+    loop: 0
+    blendRate: 0.1
+    frame: 0
+    currentTime: 0
+    currentState: 0
+    events: []
+    attacks: []
+  - stateName: Hitstun
+    index: 0
+    length: 1
+    loop: 1
+    blendRate: 0.125
+    frame: 0
+    currentTime: 0
+    currentState: 0
+    events: []
+    attacks: []
+  characterScripts:
+  - index: 0
+    name: Velocity Y
+  - index: 0
+    name: Front Velocity
+  - index: 0
+    name: Velocity XZ
+  - index: 0
+    name: Camera Relative Stick Move
+  commands:
+  - inputString: Jump
+    state: 1
+  - inputString: Dash
+    state: 2
