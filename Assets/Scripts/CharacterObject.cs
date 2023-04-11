@@ -165,7 +165,7 @@ public class CharacterObject : MonoBehaviour
 
     void SetAnimation(string aniName)
     {
-        //myAnimator.CrossFadeInFixedTime(aniName, GameEngine.coreData.characterStates[currentState].blendRate);
+        myAnimator.CrossFadeInFixedTime(aniName, GameEngine.coreData.characterStates[currentState].blendRate);
         Debug.Log(myName + " Start: " + aniName);
     }
 

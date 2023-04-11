@@ -1,0 +1,4 @@
+Bouncing Fight Idle on X Bot - 90 total frames
+Cross Punch - 61 frames
+Punching - 32 frames
+Roundhouse Kick - 76 frames
