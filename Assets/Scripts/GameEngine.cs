@@ -13,7 +13,7 @@ public class GameEngine : MonoBehaviour
     void Start()
     {
         coreData = coreDataObject;
-        //Application.targetFrameRate = 60;
+        Application.targetFrameRate = 60;
     }
 
     // Freezing or slowing time right at the moment of an impact to create the impression that something hits harder, or for dramatic effect.

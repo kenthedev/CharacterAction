@@ -15,7 +15,7 @@ MonoBehaviour:
   characterStates:
   - stateName: Neutral
     index: 0
-    length: 0
+    length: 90
     loop: 1
     blendRate: 0.1
     frame: 60
@@ -29,10 +29,10 @@ MonoBehaviour:
     attacks: []
   - stateName: Jump
     index: 0
-    length: 60
+    length: 30
     loop: 0
     blendRate: 0.1
-    frame: 30
+    frame: 60
     currentTime: 0
     currentState: 0
     events:
@@ -45,7 +45,7 @@ MonoBehaviour:
       variable: 0.05
       script: 3
     attacks: []
-  - stateName: Dash
+  - stateName: Action
     index: 0
     length: 0
     loop: 0
@@ -59,11 +59,21 @@ MonoBehaviour:
       variable: 0.3
       script: 1
     attacks: []
-  - stateName: Slash
+  - stateName: Melee
     index: 0
-    length: 0
+    length: 61
     loop: 0
-    blendRate: 0.1
+    blendRate: 0.125
+    frame: 0
+    currentTime: 0
+    currentState: 0
+    events: []
+    attacks: []
+  - stateName: Kick
+    index: 0
+    length: 76
+    loop: 0
+    blendRate: 0.125
     frame: 0
     currentTime: 0
     currentState: 0
@@ -101,5 +111,9 @@ MonoBehaviour:
   commands:
   - inputString: Jump
     state: 1
-  - inputString: Dash
+  - inputString: Action
     state: 2
+  - inputString: Melee
+    state: 3
+  - inputString: Gun
+    state: 4
