@@ -108,6 +108,13 @@ public class CharacterObject : MonoBehaviour
         }
     }
 
+    void FaceTarget(Vector3 tarPos)
+    {
+        Vector3 tarOffset = tarPos - transform.position;
+        tarOffset.y = 0;
+        character.transform.rotation = Quaternion.LookRotation(tarOffset, Vector3.up);
+    }
+
     public bool aerialFlag;
     public float aerialTimer;
     public float aniAerialState;
@@ -173,16 +180,20 @@ public class CharacterObject : MonoBehaviour
     {
         CharacterState myCurrentState = GameEngine.coreData.characterStates[currentState];
 
-        UpdateStateEvents();
-        UpdateStateAttacks();
-
-        prevStateTime = currentStateTime;
-        currentStateTime++;
-
-        if (currentStateTime >= myCurrentState.length)
+        if (hitStun > 0) { GettingHit(); }
+        else
         {
-            if (myCurrentState.loop) { LoopState(); }
-            else{ EndState(); }
+            UpdateStateEvents();
+            UpdateStateAttacks();
+
+            prevStateTime = currentStateTime;
+            currentStateTime++;
+
+            if (currentStateTime >= myCurrentState.length)
+            {
+                if (myCurrentState.loop) { LoopState(); }
+                else { EndState(); }
+            }
         }
     }
 
@@ -349,12 +360,16 @@ public class CharacterObject : MonoBehaviour
         hitAniX = curAtk.hitAni.x;
         hitAniY = curAtk.hitAni.y;
 
+        FaceTarget(attacker.transform.position);
+
         GameEngine.SetHitStop(curAtk.hitStop);
 
         hitStun = curAtk.hitstun;
 
-        StartState(5); // start hitstun state
+        StartState(5); // magic number, is the index of the hitstun character state
     }
+
+
 
     public float hitStun;
     public void GettingHit()

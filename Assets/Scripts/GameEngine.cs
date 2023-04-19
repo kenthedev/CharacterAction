@@ -22,6 +22,11 @@ public class GameEngine : MonoBehaviour
         if (_pow > hitStop) { hitStop = _pow;  }
     }
 
+    public static GameObject GetMainCharacterObject()
+    {
+        return GameObject.Find("Player");
+    }
+
     // Update is called once per frame
     void Update()
     {

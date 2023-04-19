@@ -68,7 +68,15 @@ MonoBehaviour:
     currentTime: 0
     currentState: 0
     events: []
-    attacks: []
+    attacks:
+    - start: 10
+      length: 3
+      hitstun: 60
+      hitStop: 0
+      hitAni: {x: 1, y: -1}
+      knockback: {x: 0, y: 0, z: 0.6}
+      hitboxPos: {x: 0, y: 0, z: 0.649}
+      hitboxScale: {x: 1, y: 1, z: 1}
   - stateName: Kick
     index: 0
     length: 76
@@ -79,21 +87,25 @@ MonoBehaviour:
     currentState: 0
     events: []
     attacks: []
+  - stateName: Hitstun
+    index: 0
+    length: 10
+    loop: 1
+    blendRate: 0.125
+    frame: 0
+    currentTime: 0
+    currentState: 0
+    events:
+    - start: 0
+      end: 10
+      variable: 0
+      script: 4
+    attacks: []
   - stateName: Dodge
     index: 0
     length: 0
     loop: 0
     blendRate: 0.1
-    frame: 0
-    currentTime: 0
-    currentState: 0
-    events: []
-    attacks: []
-  - stateName: Hitstun
-    index: 0
-    length: 1
-    loop: 1
-    blendRate: 0.125
     frame: 0
     currentTime: 0
     currentState: 0
@@ -108,6 +120,8 @@ MonoBehaviour:
     name: Velocity XZ
   - index: 0
     name: Camera Relative Stick Move
+  - index: 0
+    name: GettingHit
   commands:
   - inputString: Jump
     state: 1
