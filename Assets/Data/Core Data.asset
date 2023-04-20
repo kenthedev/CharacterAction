@@ -119,9 +119,11 @@ MonoBehaviour:
   - index: 0
     name: Velocity XZ
   - index: 0
-    name: Camera Relative Stick Move
+    name: CameraRelativeStickMove
   - index: 0
     name: GettingHit
+  - index: 0
+    name: GlobalPrefab
   commands:
   - inputString: Jump
     state: 1
@@ -131,3 +133,4 @@ MonoBehaviour:
     state: 3
   - inputString: Gun
     state: 4
+  globalPrefabs: []

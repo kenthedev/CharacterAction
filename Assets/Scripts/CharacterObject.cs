@@ -30,6 +30,8 @@ public class CharacterObject : MonoBehaviour
 
     public bool canCancel;
     public int hitConfirm;
+
+    public InputBuffer inputBuffer = new InputBuffer();
     
     // Start is called before the first frame update
     void Start()
@@ -50,7 +52,7 @@ public class CharacterObject : MonoBehaviour
         if (GameEngine.hitStop <= 0)
         {
             // Update Input Buffer
-
+            // inputBuffer.Update();
 
             // Update Input
             switch (controlType)
@@ -274,7 +276,15 @@ public class CharacterObject : MonoBehaviour
             case 4:
                 GettingHit();
                 break;
+            case 5:
+                GlobalPrefab(_var);
+                break;
         }
+    }
+
+    void GlobalPrefab(float _index)
+    {
+        GameEngine.GlobalPrefab((int)_index, gameObject);
     }
 
     void FrontVelocity(float _pow)
@@ -315,25 +325,55 @@ public class CharacterObject : MonoBehaviour
         }
     }
 
+    void StickMove(float _pow)
+    {
+        float _mov = 0;
+        if (Input.GetAxisRaw("Horizontal") > deadzone)
+        {
+            _mov = 1;
+        }
+        if (Input.GetAxisRaw("Horizontal") < -deadzone)
+        {
+            _mov = -1;
+        }
+
+        velocity.x += _mov * moveSpeed * _pow;
+    }
+
     public float deadzone = 0.2f;
     public float moveSpeed = 0.01f;
     public float jumpPow = 1;
     void UpdateInput()
     {
         leftStick = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        inputBuffer.Update();
+
         foreach(InputCommand c in GameEngine.coreData.commands)
         {
-            if (c.inputString != "")
+            foreach(InputBufferItem bItem in inputBuffer.inputList)
             {
-                if (Input.GetButtonDown(c.inputString))
+                foreach(InputStateItem bState in bItem.buffer)
                 {
-                    StartState(c.state);
-                    break;
-                    // Continue from here
-                    // --> Hold state until out of command list and then check if you can Cancel or not
+                    if (c.inputString == bItem.button)
+                    {
+                        if (bState.CanExecute())
+                        {
+                            if (canCancel)
+                            {
+                                bState.used = true;
+                                StartState(c.state);
+                                break;
+                                // Continue from here
+                                // --> Hold state until out of command list and then check if you can Cancel or not
+                            }
+                        }
+                        
+                    }
                 }
             }
         }
+        
     }
 
     public void SetVelocity(Vector3 _pow)
@@ -367,6 +407,7 @@ public class CharacterObject : MonoBehaviour
         hitStun = curAtk.hitstun;
 
         StartState(5); // magic number, is the index of the hitstun character state
+        //GlobalPrefab(0); // magic number, is element 0 of the global prefab list
     }
 
 
