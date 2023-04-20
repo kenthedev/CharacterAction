@@ -18,14 +18,18 @@ MonoBehaviour:
     length: 90
     loop: 1
     blendRate: 0.1
-    frame: 60
+    frame: 90
     currentTime: 0
     currentState: 0
     events:
     - start: 0
-      end: 60
+      end: 90
       variable: 0.05
       script: 3
+    - start: 0
+      end: 90
+      variable: 1
+      script: 6
     attacks: []
   - stateName: Jump
     index: 0
@@ -44,6 +48,10 @@ MonoBehaviour:
       end: 60
       variable: 0.05
       script: 3
+    - start: 8
+      end: 60
+      variable: 1
+      script: 6
     attacks: []
   - stateName: Action
     index: 0
@@ -67,26 +75,52 @@ MonoBehaviour:
     frame: 0
     currentTime: 0
     currentState: 0
-    events: []
+    events:
+    - start: 0
+      end: 9
+      variable: 0.04
+      script: 3
+    - start: 10
+      end: 10
+      variable: 0.04
+      script: 1
     attacks:
     - start: 10
       length: 3
-      hitstun: 60
-      hitStop: 0
+      hitstun: 30
+      hitStop: 2
       hitAni: {x: 1, y: -1}
       knockback: {x: 0, y: 0, z: 0.6}
       hitboxPos: {x: 0, y: 0, z: 0.649}
       hitboxScale: {x: 1, y: 1, z: 1}
+      cancelWindow: 2
   - stateName: Kick
     index: 0
     length: 76
     loop: 0
-    blendRate: 0.125
+    blendRate: 0.05
     frame: 0
     currentTime: 0
     currentState: 0
-    events: []
-    attacks: []
+    events:
+    - start: 0
+      end: 9
+      variable: 0.04
+      script: 3
+    - start: 10
+      end: 10
+      variable: 0.04
+      script: 1
+    attacks:
+    - start: 10
+      length: 3
+      hitstun: 30
+      hitStop: 2
+      hitAni: {x: 1, y: -1}
+      knockback: {x: 0, y: 0, z: 0.3}
+      hitboxPos: {x: 0.06, y: 0.28, z: 0.87}
+      hitboxScale: {x: 2.25, y: 1.57, z: 2.05}
+      cancelWindow: 2
   - stateName: Hitstun
     index: 0
     length: 10
@@ -101,7 +135,7 @@ MonoBehaviour:
       variable: 0
       script: 4
     attacks: []
-  - stateName: Dodge
+  - stateName: Cancel
     index: 0
     length: 0
     loop: 0
@@ -124,6 +158,8 @@ MonoBehaviour:
     name: GettingHit
   - index: 0
     name: GlobalPrefab
+  - index: 0
+    name: CanCancel
   commands:
   - inputString: Jump
     state: 1

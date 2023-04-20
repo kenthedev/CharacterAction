@@ -16,5 +16,7 @@ public class Attack
 
     public Vector3 hitboxPos;
     public Vector3 hitboxScale;
+
+    public float cancelWindow;
 }
 

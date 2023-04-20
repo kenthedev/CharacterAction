@@ -52,7 +52,8 @@ public class CharacterObject : MonoBehaviour
         if (GameEngine.hitStop <= 0)
         {
             // Update Input Buffer
-            // inputBuffer.Update();
+
+
 
             // Update Input
             switch (controlType)
@@ -217,12 +218,6 @@ public class CharacterObject : MonoBehaviour
     {
         foreach(StateEvent _ev in GameEngine.coreData.characterStates[currentState].events)
         { 
-            /*
-            if (currentStateTime <= _ev.start && currentStateTime <= _ev.end) // not ideal, should fix eventually
-            {
-                DoEventScript(_ev.script, _ev.variable);
-            }
-            */
             if (currentStateTime >= _ev.start && currentStateTime <= _ev.end)
             {
                 DoEventScript(_ev.script, _ev.variable);
@@ -251,13 +246,38 @@ public class CharacterObject : MonoBehaviour
                 hitActive = 0;
             }
 
+            // HitCancel
+            float cWindow = _atk.start + _atk.cancelWindow;
+            if (currentStateTime == cWindow)
+            {
+                if (hitConfirm > 0) { canCancel = true; }
+            }
+
+            if (currentStateTime >= cWindow + whiffWindow)
+            {
+                canCancel = true;
+            }
+
             _cur++;
         }
     }
 
+    public static float whiffWindow = 8f;
+
     void HitCancel()
     {
+        float cWindow = GameEngine.coreData.characterStates[currentState].attacks[currentAttackIndex].start
+            + GameEngine.coreData.characterStates[currentState].attacks[currentAttackIndex].cancelWindow;
+        
+        if (currentStateTime == cWindow)
+        {
+            if (hitConfirm > 0) { canCancel = true; }
+        }
 
+        if (currentStateTime == cWindow + whiffWindow)
+        {
+            canCancel = true;
+        }
     }
 
     void DoEventScript(int _index, float _var)
@@ -279,7 +299,16 @@ public class CharacterObject : MonoBehaviour
             case 5:
                 GlobalPrefab(_var);
                 break;
+            case 6:
+                CanCancel(_var);
+                break;
         }
+    }
+
+    void CanCancel(float _val)
+    {
+        if (_val > 0f) { canCancel = true; }
+        else { canCancel = false; }
     }
 
     void GlobalPrefab(float _index)
@@ -405,12 +434,11 @@ public class CharacterObject : MonoBehaviour
         GameEngine.SetHitStop(curAtk.hitStop);
 
         hitStun = curAtk.hitstun;
+        attacker.hitConfirm += 1;
 
         StartState(5); // magic number, is the index of the hitstun character state
         //GlobalPrefab(0); // magic number, is element 0 of the global prefab list
     }
-
-
 
     public float hitStun;
     public void GettingHit()
