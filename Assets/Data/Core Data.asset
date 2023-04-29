@@ -31,6 +31,9 @@ MonoBehaviour:
       variable: 1
       script: 6
     attacks: []
+    jumpReq: 0
+    meterReq: 0
+    cooldownReq: 0
   - stateName: Jump
     index: 0
     length: 30
@@ -43,7 +46,7 @@ MonoBehaviour:
     - start: 10
       end: 10
       variable: 0.2
-      script: 0
+      script: 7
     - start: 0
       end: 60
       variable: 0.05
@@ -53,6 +56,9 @@ MonoBehaviour:
       variable: 1
       script: 6
     attacks: []
+    jumpReq: 1
+    meterReq: 0
+    cooldownReq: 0
   - stateName: Action
     index: 0
     length: 0
@@ -67,6 +73,9 @@ MonoBehaviour:
       variable: 0.3
       script: 1
     attacks: []
+    jumpReq: 0
+    meterReq: 0
+    cooldownReq: 0
   - stateName: Melee
     index: 0
     length: 61
@@ -94,6 +103,9 @@ MonoBehaviour:
       hitboxPos: {x: 0, y: 0, z: 0.649}
       hitboxScale: {x: 1, y: 1, z: 1}
       cancelWindow: 2
+    jumpReq: 0
+    meterReq: 0
+    cooldownReq: 0
   - stateName: Kick
     index: 0
     length: 76
@@ -121,6 +133,9 @@ MonoBehaviour:
       hitboxPos: {x: 0.06, y: 0.28, z: 0.87}
       hitboxScale: {x: 2.25, y: 1.57, z: 2.05}
       cancelWindow: 2
+    jumpReq: 0
+    meterReq: 0
+    cooldownReq: 0
   - stateName: Hitstun
     index: 0
     length: 10
@@ -135,6 +150,9 @@ MonoBehaviour:
       variable: 0
       script: 4
     attacks: []
+    jumpReq: 0
+    meterReq: 0
+    cooldownReq: 0
   - stateName: Cancel
     index: 0
     length: 0
@@ -145,6 +163,22 @@ MonoBehaviour:
     currentState: 0
     events: []
     attacks: []
+    jumpReq: 0
+    meterReq: 0
+    cooldownReq: 0
+  - stateName: Dash
+    index: 0
+    length: 0
+    loop: 0
+    blendRate: 0.1
+    frame: 0
+    currentTime: 0
+    currentState: 0
+    events: []
+    attacks: []
+    jumpReq: 0
+    meterReq: 0
+    cooldownReq: 0
   characterScripts:
   - index: 0
     name: Velocity Y
@@ -160,6 +194,8 @@ MonoBehaviour:
     name: GlobalPrefab
   - index: 0
     name: CanCancel
+  - index: 0
+    name: Jump
   commands:
   - inputString: Jump
     state: 1

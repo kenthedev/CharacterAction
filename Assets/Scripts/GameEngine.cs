@@ -59,7 +59,7 @@ public class GameEngine : MonoBehaviour
     }
 
     public InputBuffer playerInputBuffer;
-    private void OnGUI()
+    private void DisplayBuffer()
     {
         int xSpace = 20;
         int ySpace = 25;
@@ -70,10 +70,15 @@ public class GameEngine : MonoBehaviour
             GUI.Label(new Rect(xSpace, i * ySpace, 100, 20), playerInputBuffer.inputList[i].button + ":");
             for (int j = 0; j < playerInputBuffer.inputList[i].buffer.Count; j++)
             {
-                if (playerInputBuffer.inputList[i].buffer[i].used) 
+                if (playerInputBuffer.inputList[i].buffer[i].used)
                 { GUI.Label(new Rect(j * xSpace + 100, i * ySpace, 100, 20), playerInputBuffer.inputList[i].buffer[j].hold.ToString() + "*"); }
                 else { GUI.Label(new Rect(j * xSpace + 50, i * ySpace, 100, 20), playerInputBuffer.inputList[i].buffer[j].hold.ToString()); }
             }
         }
+    }
+
+    private void OnGUI()
+    {
+        DisplayBuffer();
     }
 }

@@ -20,6 +20,16 @@ public class CharacterState
 
     public List<StateEvent> events;
     public List<Attack> attacks;
+
+    public int jumpReq;  // would be better to place these in their own class
+    public int meterReq;
+    public int cooldownReq;
+
+    public bool ConditionsMet(CharacterObject character)
+    {
+        if (character.jumps < jumpReq) { return false; }
+        return true;
+    }
 }
 
 [System.Serializable]

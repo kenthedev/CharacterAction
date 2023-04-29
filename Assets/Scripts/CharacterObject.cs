@@ -122,6 +122,10 @@ public class CharacterObject : MonoBehaviour
     public float aerialTimer;
     public float aniAerialState;
     public float aniFallSpeed;
+
+    public int jumps;
+    public int jumpMax = 2;
+
     void UpdatePhysics()
     {
         velocity.y += gravity;
@@ -137,6 +141,7 @@ public class CharacterObject : MonoBehaviour
             aerialTimer = 0;
             aniAerialState *= 0.75f;
             velocity.y = 0;
+            jumps = jumpMax;
         }
         else
         {
@@ -151,6 +156,8 @@ public class CharacterObject : MonoBehaviour
                 {
                     aniAerialState += 0.1f;
                 }
+                // enable to only allow one jump when airborne
+                // if (jumps == jumpMax) { jumps--; } 
             }
         }
 
@@ -302,7 +309,16 @@ public class CharacterObject : MonoBehaviour
             case 6:
                 CanCancel(_var);
                 break;
+            case 7:
+                Jump(_var);
+                break;
         }
+    }
+
+    void Jump(float _pow)
+    {
+        velocity.y = _pow;
+        jumps--;
     }
 
     void CanCancel(float _val)
@@ -378,10 +394,13 @@ public class CharacterObject : MonoBehaviour
 
         inputBuffer.Update();
 
+        bool startState = false;
         foreach(InputCommand c in GameEngine.coreData.commands)
         {
+            if (startState) { break; }
             foreach(InputBufferItem bItem in inputBuffer.inputList)
             {
+                if (startState) { break; }
                 foreach(InputStateItem bState in bItem.buffer)
                 {
                     if (c.inputString == bItem.button)
@@ -390,14 +409,17 @@ public class CharacterObject : MonoBehaviour
                         {
                             if (canCancel)
                             {
-                                bState.used = true;
-                                StartState(c.state);
-                                break;
-                                // Continue from here
-                                // --> Hold state until out of command list and then check if you can Cancel or not
+                                if (GameEngine.coreData.characterStates[c.state].ConditionsMet(this))
+                                {
+                                    startState = true;
+                                    bState.used = true;
+                                    StartState(c.state);
+                                    break;
+                                    // Continue from here
+                                    // --> Hold state until out of command list and then check if you can Cancel or not
+                                }
                             }
                         }
-                        
                     }
                 }
             }
