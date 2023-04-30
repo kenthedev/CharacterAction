@@ -18,9 +18,6 @@ MonoBehaviour:
     length: 90
     loop: 1
     blendRate: 0.1
-    frame: 90
-    currentTime: 0
-    currentState: 0
     events:
     - start: 0
       end: 90
@@ -33,15 +30,13 @@ MonoBehaviour:
     attacks: []
     jumpReq: 0
     meterReq: 0
-    cooldownReq: 0
+    dashCooldownReq: 0
+    groundedReq: 0
   - stateName: Jump
     index: 0
     length: 30
     loop: 0
     blendRate: 0.1
-    frame: 60
-    currentTime: 0
-    currentState: 0
     events:
     - start: 10
       end: 10
@@ -58,32 +53,24 @@ MonoBehaviour:
     attacks: []
     jumpReq: 1
     meterReq: 0
-    cooldownReq: 0
+    dashCooldownReq: 0
+    groundedReq: 0
   - stateName: Action
     index: 0
     length: 0
     loop: 0
     blendRate: 0.1
-    frame: 0
-    currentTime: 0
-    currentState: 0
-    events:
-    - start: 0
-      end: 0
-      variable: 0.3
-      script: 1
+    events: []
     attacks: []
     jumpReq: 0
     meterReq: 0
-    cooldownReq: 0
-  - stateName: Melee
+    dashCooldownReq: 0
+    groundedReq: 0
+  - stateName: Light Attack
     index: 0
     length: 61
     loop: 0
     blendRate: 0.125
-    frame: 0
-    currentTime: 0
-    currentState: 0
     events:
     - start: 0
       end: 9
@@ -99,21 +86,19 @@ MonoBehaviour:
       hitstun: 30
       hitStop: 2
       hitAni: {x: 1, y: -1}
-      knockback: {x: 0, y: 0, z: 0.6}
+      knockback: {x: 0, y: 0, z: 0.02}
       hitboxPos: {x: 0, y: 0, z: 0.649}
       hitboxScale: {x: 1, y: 1, z: 1}
       cancelWindow: 2
     jumpReq: 0
     meterReq: 0
-    cooldownReq: 0
-  - stateName: Kick
+    dashCooldownReq: 0
+    groundedReq: 0
+  - stateName: Heavy Attack
     index: 0
     length: 76
     loop: 0
     blendRate: 0.05
-    frame: 0
-    currentTime: 0
-    currentState: 0
     events:
     - start: 0
       end: 9
@@ -135,15 +120,13 @@ MonoBehaviour:
       cancelWindow: 2
     jumpReq: 0
     meterReq: 0
-    cooldownReq: 0
+    dashCooldownReq: 0
+    groundedReq: 0
   - stateName: Hitstun
     index: 0
     length: 10
     loop: 1
     blendRate: 0.125
-    frame: 0
-    currentTime: 0
-    currentState: 0
     events:
     - start: 0
       end: 10
@@ -152,33 +135,45 @@ MonoBehaviour:
     attacks: []
     jumpReq: 0
     meterReq: 0
-    cooldownReq: 0
+    dashCooldownReq: 0
+    groundedReq: 0
   - stateName: Cancel
     index: 0
     length: 0
     loop: 0
     blendRate: 0.1
-    frame: 0
-    currentTime: 0
-    currentState: 0
     events: []
     attacks: []
     jumpReq: 0
     meterReq: 0
-    cooldownReq: 0
+    dashCooldownReq: 0
+    groundedReq: 0
   - stateName: Dash
     index: 0
     length: 0
     loop: 0
     blendRate: 0.1
-    frame: 0
-    currentTime: 0
-    currentState: 0
+    events:
+    - start: 0
+      end: 0
+      variable: 0.3
+      script: 1
+    attacks: []
+    jumpReq: 0
+    meterReq: 0
+    dashCooldownReq: 0
+    groundedReq: 0
+  - stateName: Ghost
+    index: 0
+    length: 0
+    loop: 0
+    blendRate: 0.1
     events: []
     attacks: []
     jumpReq: 0
     meterReq: 0
-    cooldownReq: 0
+    dashCooldownReq: 0
+    groundedReq: 0
   characterScripts:
   - index: 0
     name: Velocity Y
@@ -196,13 +191,93 @@ MonoBehaviour:
     name: CanCancel
   - index: 0
     name: Jump
-  commands:
-  - inputString: Jump
-    state: 1
-  - inputString: Action
-    state: 2
-  - inputString: Melee
-    state: 3
-  - inputString: Gun
-    state: 4
+  - index: 0
+    name: FaceStick
+  commandStates:
+  - stateName: Grounded
+    aerial: 0
+    explicitState: 0
+    state: 0
+    commandSteps:
+    - idIndex: 0
+      priority: 0
+      command:
+        input: 0
+        state: 0
+      followUps: 010000000200000003000000
+      strict: 0
+      myRect:
+        serializedVersion: 2
+        x: 8
+        y: 113
+        width: 240
+        height: 30
+      activated: 1
+    - idIndex: 1
+      priority: 0
+      command:
+        input: 0
+        state: 1
+      followUps: 
+      strict: 0
+      myRect:
+        serializedVersion: 2
+        x: 303
+        y: 43
+        width: 240
+        height: 30
+      activated: 1
+    - idIndex: 2
+      priority: 0
+      command:
+        input: 2
+        state: 3
+      followUps: 04000000
+      strict: 0
+      myRect:
+        serializedVersion: 2
+        x: 308
+        y: 110
+        width: 240
+        height: 30
+      activated: 1
+    - idIndex: 3
+      priority: 0
+      command:
+        input: 3
+        state: 4
+      followUps: 
+      strict: 0
+      myRect:
+        serializedVersion: 2
+        x: 314
+        y: 188
+        width: 240
+        height: 30
+      activated: 1
+    - idIndex: 4
+      priority: 0
+      command:
+        input: 2
+        state: 4
+      followUps: 
+      strict: 0
+      myRect:
+        serializedVersion: 2
+        x: 619
+        y: 105
+        width: 240
+        height: 30
+      activated: 1
+    omitList: 04000000
+    nextFollowups: 010000000200000003000000
   globalPrefabs: []
+  rawInputs:
+  - inputType: 0
+    name: Jump
+  - inputType: 0
+    name: Action
+  - inputType: 0
+    name: Light Attack
+  - inputType: 0
+    name: Heavy Attack

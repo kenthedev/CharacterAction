@@ -4,88 +4,154 @@ using UnityEngine;
 
 public class InputBuffer
 {
-    public static string[] rawInputList = new string[]
-    {
-        "Jump",
-        "Action",
-        "Melee",
-        "Gun"
-    };
+    //public static string[] rawInputList = new string[]
+    //{
+    //    "Jump",
+    //    "Action",
+    //    "Light Attack",
+    //    "Heavy Attack"
+    //};
 
-    public List<InputBufferItem> inputList = new List<InputBufferItem>();
+    public List<InputBufferFrame> buffer; // = new List<InputBufferFrame>();
+    public static int bufferWindow = 25;
+
+    public List<int> buttonCommandCheck;
+    //public List<int> motionCommandCheck;
+
+    void InitializeBuffer()
+    {
+        buffer = new List<InputBufferFrame>();
+        for (int i = 0; i < bufferWindow; i++)
+        {
+            InputBufferFrame newB = new InputBufferFrame();
+            newB.InitializeFrame();
+            buffer.Add(newB);
+        }
+
+        buttonCommandCheck = new List<int>();
+        for (int i = 0; i < GameEngine.coreData.rawInputs.Count; i++)
+        {
+            buttonCommandCheck.Add(-1);
+        }
+
+        /*
+        motionCommandCheck = new List<int>();
+        for (int i = 0; i < GameEngine.coreData.motionCommands.Count; i++)
+        {
+            motionCommandCheck.Add(-1);
+        }
+        */
+    }
 
     public void Update()
     {
-        GameEngine.gameEngine.playerInputBuffer = this; // bad shouldn't do this
+        GameEngine.gameEngine.inputBuffer = this; // bad shouldn't do this
 
-        if (inputList.Count < rawInputList.Length || inputList.Count == 0)
+        if (buffer == null) { InitializeBuffer(); }
+        if (buffer.Count < GameEngine.coreData.rawInputs.Count || buffer.Count == 0)
         {
             InitializeBuffer();
         }
 
-        foreach (InputBufferItem c in inputList)
+        for (int i = 0; i < buffer.Count - 1; i++)
         {
-            c.ResolveCommand();
-            for (int b = 0; b < c.buffer.Count - 1; b++)
+            for (int r = 0; r < buffer[i].rawInputs.Count; r++)
             {
-                c.buffer[b].hold = c.buffer[b + 1].hold;
-                c.buffer[b].used = c.buffer[b + 1].used;
+                buffer[i].rawInputs[r].value = buffer[i + 1].rawInputs[r].value;
+                buffer[i].rawInputs[r].hold = buffer[i + 1].rawInputs[r].hold;
+                buffer[i].rawInputs[r].used = buffer[i + 1].rawInputs[r].used;
             }
         }
-    }
 
-    void InitializeBuffer()
-    {
-        inputList = new List<InputBufferItem>();
-        foreach (string s in rawInputList)
+        buffer[buffer.Count - 1].Update();
+
+        for (int r = 0; r < buttonCommandCheck.Count; r++)
         {
-            InputBufferItem newB = new InputBufferItem();
-            newB.button = s;
-            inputList.Add(newB);
+            buttonCommandCheck[r] = -1;
+            for (int b = 0; b < buffer.Count; b++)
+            {
+                if (buffer[b].rawInputs[r].CanExecute()) { buttonCommandCheck[r] = b; }
+            }
+            if (GameEngine.coreData.rawInputs[r].inputType == RawInput.InputType.IGNORE) { buttonCommandCheck[r] = 0; }
         }
     }
+
+    public void UseInput(int _i)
+    {
+        buffer[buttonCommandCheck[_i]].rawInputs[_i].used = true;
+        // Debug.Log("used up!!!> : " + buttonCommandCheck[_i].ToString());
+        buttonCommandCheck[_i] = -1;
+        // buffer[buttonCommandCheck[_i]].rawInputs[_i].hold = -2;
+    }
+
 }
 
-public class InputBufferItem
+public class InputBufferFrame
 {
-    public string button;
-    public List<InputStateItem> buffer;
+    public List<InputBufferFrameState> rawInputs;
 
-    public static int bufferWindow = 12;
-    public InputBufferItem()
+    public void InitializeFrame()
     {
-        buffer = new List<InputStateItem>();
-        for (int i = 0; i < bufferWindow; i++)
+        rawInputs = new List<InputBufferFrameState>();
+        for (int i = 0; i < GameEngine.coreData.rawInputs.Count; i++)
         {
-            buffer.Add(new InputStateItem());
+            InputBufferFrameState newFS = new InputBufferFrameState();
+            newFS.rawInput = i;
+            rawInputs.Add(newFS);
         }
     }
 
-    public void ResolveCommand()
+    public void Update()
     {
-        if (Input.GetButton(button))
+        if (rawInputs == null) { InitializeFrame(); }
+        if (rawInputs.Count == 0 || rawInputs.Count != GameEngine.coreData.rawInputs.Count) { InitializeFrame(); }
+        foreach (InputBufferFrameState fs in rawInputs)
         {
-            buffer[buffer.Count - 1].HoldUp();
-        }
-        else
-        {
-            buffer[buffer.Count - 1].ReleaseHold();
+            fs.ResolveCommand();
         }
     }
+
 }
 
-public class InputStateItem
+public class InputBufferFrameState
 {
+    public int rawInput;
+    public float value;
     public int hold;
     public bool used;
 
-    public bool CanExecute()
+    public void ResolveCommand()
     {
-        if (hold == 1 && !used) { return true; }
-        return false;
+        used = false;
+        switch (GameEngine.coreData.rawInputs[rawInput].inputType)
+        {
+            case RawInput.InputType.BUTTON:
+                if (Input.GetButton(GameEngine.coreData.rawInputs[rawInput].name))
+                {
+                    HoldUp(1f);
+                }
+                else
+                {
+                    ReleaseHold();
+                }
+                break;
+            case RawInput.InputType.AXIS:
+                if (Mathf.Abs(Input.GetAxisRaw(GameEngine.coreData.rawInputs[rawInput].name)) > GameEngine.gameEngine.deadZone)
+                {
+                    HoldUp(Input.GetAxisRaw(GameEngine.coreData.rawInputs[rawInput].name));
+                }
+                else
+                {
+                    ReleaseHold();
+                }
+                break;
+        }
     }
-    public void HoldUp()
+
+    public void HoldUp(float _val)
     {
+        value = _val;
+
         if (hold < 0) { hold = 1; }
         else { hold += 1; }
     }
@@ -94,8 +160,33 @@ public class InputStateItem
     {
         if (hold > 0) { hold = -1; used = false; }
         else { hold = 0; }
+        value = 0;
+        // GameEgnine.gameEngine.playerInputBuffer.buttonCommandCheck[rawInput]  = 0;
     }
+
+    public bool CanExecute()
+    {
+        if (hold == 1 && !used) { return true; }
+        return false;
+    }
+
+    public bool MotionNeutral()
+    {
+        if (Mathf.Abs(value) < GameEngine.gameEngine.deadZone) { return true; }
+        return false;
+    }
+
+
 }
+
+[System.Serializable]
+public class RawInput
+{
+    public enum InputType { BUTTON, AXIS, DOUBLE_AXIS, DIRECTION, IGNORE }
+    public InputType inputType;
+    public string name;
+}
+
 
 
 /*

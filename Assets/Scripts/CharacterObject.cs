@@ -54,7 +54,6 @@ public class CharacterObject : MonoBehaviour
             // Update Input Buffer
 
 
-
             // Update Input
             switch (controlType)
             {
@@ -74,8 +73,14 @@ public class CharacterObject : MonoBehaviour
             UpdatePhysics();
             
         }
-        // when hitStop is occuring, we'll want to slow down animation too
-        UpdateAnimation();
+
+        UpdateTimers();
+        UpdateAnimation(); // when hitStop is occuring, we'll want to slow down animation too
+    }
+
+    void UpdateTimers() // update meters
+    {
+        if (dashCooldown > 0) { dashCooldown -= dashCooldownRate; }
     }
 
     void UpdateAI()
@@ -84,7 +89,7 @@ public class CharacterObject : MonoBehaviour
     }
 
     public float aniMoveSpeed;
-
+    public float aniSpeed;
     void UpdateAnimation()
     {
         Vector3 latSpeed = new Vector3(velocity.x, 0, velocity.z);
@@ -92,6 +97,9 @@ public class CharacterObject : MonoBehaviour
         myAnimator.SetFloat("moveSpeed", aniMoveSpeed);
         myAnimator.SetFloat("aerialState", aniAerialState);
         myAnimator.SetFloat("fallSpeed", aniFallSpeed);
+        //myAnimator.SetFloat("hitAniX", curHitAni.x);
+        //myAnimator.SetFloat("hitAniX", curHitAni.x);
+        //myAnimator.SetFloat("aniSpeed", aniSpeed);
     }
 
     bool CheckVelocityDeadzone()
@@ -125,6 +133,31 @@ public class CharacterObject : MonoBehaviour
 
     public int jumps;
     public int jumpMax = 2;
+
+    public float dashCooldown;
+    public float dashCooldownMax = 180f;
+    public float dashCooldownRate = 1f;
+
+    public float specialMeter;
+    public float specialMeterMax = 100f;
+
+    // using a skill for example
+    public void UseMeter(float _val) 
+    {
+        ChangeMeter(-_val); // could also do vfx or sfx here
+    }
+
+    // could be from striking an enemy
+    public void BuildMeter(float _val)
+    {
+        ChangeMeter(_val);
+    }
+
+    public void ChangeMeter(float _val)
+    {
+        specialMeter += _val;
+        specialMeter = Mathf.Clamp(specialMeter, 0, specialMeterMax);
+    }
 
     void UpdatePhysics()
     {
@@ -178,6 +211,8 @@ public class CharacterObject : MonoBehaviour
         hitConfirm = 0;
 
         SetAnimation(GameEngine.coreData.characterStates[currentState].stateName);
+
+        if (hitStun <= 0) { FaceStick(1); }
     }
 
     void SetAnimation(string aniName)
@@ -312,6 +347,28 @@ public class CharacterObject : MonoBehaviour
             case 7:
                 Jump(_var);
                 break;
+            case 8:
+                FaceStick(_var);
+                break;
+        }
+    }
+
+    void FaceStick(float _rate)
+    {
+        Vector3 velHelp = new Vector3(0, 0, 0);
+        Vector3 velDir;
+
+        if (leftStick.x > deadzone || leftStick.x < -deadzone || leftStick.y > deadzone || leftStick.y < -deadzone)
+        {
+            velDir = Camera.main.transform.forward;
+            velDir.y = 0;
+            velDir.Normalize();
+            velHelp += velDir * leftStick.y;
+
+            velHelp += Camera.main.transform.right * leftStick.x;
+            velHelp.y = 0;
+
+            character.transform.rotation = Quaternion.Lerp(character.transform.rotation, Quaternion.LookRotation(new Vector3(velHelp.x, 0, velHelp.z), Vector3.up), _rate);
         }
     }
 
@@ -370,53 +427,149 @@ public class CharacterObject : MonoBehaviour
         }
     }
 
-    void StickMove(float _pow)
-    {
-        float _mov = 0;
-        if (Input.GetAxisRaw("Horizontal") > deadzone)
-        {
-            _mov = 1;
-        }
-        if (Input.GetAxisRaw("Horizontal") < -deadzone)
-        {
-            _mov = -1;
-        }
-
-        velocity.x += _mov * moveSpeed * _pow;
-    }
-
     public float deadzone = 0.2f;
     public float moveSpeed = 0.01f;
     public float jumpPow = 1;
+
+    public int currentCommandState;
+    public int currentCommandStep;
+    public void GetCommandState()
+    {
+        currentCommandState = 0;
+        for (int c = 0; c < GameEngine.coreData.commandStates.Count; c++) // (CommandState s in GameEngine.coreData.commandStates)
+        {
+            CommandState s = GameEngine.coreData.commandStates[c];
+            if (s.aerial == aerialFlag)
+            {
+                currentCommandState = c;
+                return;
+            }
+        }
+    }
+
+    int[] cancelStepList = new int[2];
+    
     void UpdateInput()
+    {
+        leftStick = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        // if (Input.GetButton("RB")) { targeting = true; }
+        // else { targeting = false; }
+
+        inputBuffer.Update();
+
+        bool startState = false;
+
+        GetCommandState();
+        CommandState comState = GameEngine.coreData.commandStates[currentCommandState];
+
+        if (currentCommandStep >= comState.commandSteps.Count) { currentCommandStep = 0; } // Change this to state-specific or even commandstep specific variables
+
+        cancelStepList[0] = currentCommandStep;
+        cancelStepList[1] = 0;
+        int finalS = -1;
+        int finalF = -1;
+        int currentPriority = -1;
+        for (int s = 0; s < cancelStepList.Length; s++)
+        {
+            if (comState.commandSteps[currentCommandStep].strict && s > 0) { break; }
+            if (!comState.commandSteps[currentCommandStep].activated) { break; }
+
+            for (int f = 0; f < comState.commandSteps[cancelStepList[s]].followUps.Count; f++) // CommandStep cStep in comState.commandSteps[currentCommandStep])
+            {
+                CommandStep nextStep = comState.commandSteps[comState.commandSteps[cancelStepList[s]].followUps[f]];
+                InputCommand nextCommand = nextStep.command;
+
+                if (CheckInputCommand(nextCommand))
+                {
+                    if (canCancel)
+                    {
+                        if (GameEngine.coreData.characterStates[nextCommand.state].ConditionsMet(this))
+                        {
+                            if (nextStep.priority > currentPriority) // could do greater than or equal
+                            {
+                                currentPriority = nextStep.priority;
+                                startState = true;
+                                finalS = s;
+                                finalF = f;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (startState)
+        {
+            CommandStep nextStep = comState.commandSteps[comState.commandSteps[cancelStepList[finalS]].followUps[finalF]];
+            InputCommand nextCommand = nextStep.command;
+            inputBuffer.UseInput(nextCommand.input);
+            if (nextStep.followUps.Count > 0) { currentCommandStep = nextStep.idIndex; }
+            else { currentCommandStep = 0; }
+            StartState(nextCommand.state);
+        }
+    }
+
+    public bool CheckInputCommand(InputCommand _in)
+    {
+        if (inputBuffer.buttonCommandCheck[_in.input] < 0) { return false; }
+        //if (inputBuffer.motionCommandCheck[_in.motionCommand] < 0) { return false; }
+        return true;
+    }
+
+    /*
+    void UpdateInputOld() // NOT WORKING
     {
         leftStick = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         inputBuffer.Update();
 
         bool startState = false;
-        foreach(InputCommand c in GameEngine.coreData.commands)
+
+        GetCommandState();
+        CommandState comState = GameEngine.coreData.commandStates[currentCommandState];
+
+
+        if (currentCommandStep >= comState.commandSteps.Count) { currentCommandStep = 0; } // Change this to state-specific or even commandstep specific variables
+
+        cancelStepList[0] = currentCommandStep;
+        cancelStepList[1] = 0;
+
+        for (int s = 0; s < cancelStepList.Length; s++)
         {
-            if (startState) { break; }
-            foreach(InputBufferItem bItem in inputBuffer.inputList)
+            if (comState.commandSteps[currentCommandStep].strict && s > 0) { break; }
+            
+            for (int f = 0; f < comState.commandSteps[cancelStepList[s]].followUps.Count; f++) // CommandStep cStep in comState.commandSteps[currentCommandStep])
             {
+                CommandStep nextStep = comState.commandSteps[comState.commandSteps[cancelStepList[s]].followUps[f]];
+                InputCommand stepCommand = nextStep.command;
+
                 if (startState) { break; }
-                foreach(InputStateItem bState in bItem.buffer)
+                
+                foreach (InputBufferItem bItem in inputBuffer.inputList)
                 {
-                    if (c.inputString == bItem.button)
+                    if (startState) { break; }
+                    foreach (InputStateItem bState in bItem.buffer)
                     {
-                        if (bState.CanExecute())
+                        if (stepCommand.input == bItem.button) // this was when button and input were both strings
                         {
-                            if (canCancel)
+                            if (bState.CanExecute())
                             {
-                                if (GameEngine.coreData.characterStates[c.state].ConditionsMet(this))
+                                if (canCancel)
                                 {
-                                    startState = true;
-                                    bState.used = true;
-                                    StartState(c.state);
-                                    break;
-                                    // Continue from here
-                                    // --> Hold state until out of command list and then check if you can Cancel or not
+                                    if (GameEngine.coreData.characterStates[stepCommand.state].ConditionsMet(this))
+                                    {
+                                        startState = true;
+                                        bState.used = true;
+
+                                        if (nextStep.followUps.Count > 0) { currentCommandStep = nextStep.idIndex; }
+                                        else { currentCommandStep = 0; }
+
+                                        Debug.Log("Current Step:" + currentCommandStep);
+
+                                        StartState(stepCommand.state);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -424,8 +577,10 @@ public class CharacterObject : MonoBehaviour
                 }
             }
         }
-        
     }
+    */
+
+
 
     public void SetVelocity(Vector3 _pow)
     {
@@ -457,6 +612,8 @@ public class CharacterObject : MonoBehaviour
 
         hitStun = curAtk.hitstun;
         attacker.hitConfirm += 1;
+
+        attacker.BuildMeter(10f);
 
         StartState(5); // magic number, is the index of the hitstun character state
         //GlobalPrefab(0); // magic number, is element 0 of the global prefab list

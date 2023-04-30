@@ -8,6 +8,7 @@ public class GameEngine : MonoBehaviour
     public static CoreData coreData;
 
     public static float hitStop; // hitPause
+    public float deadZone;
 
     public static GameEngine gameEngine;
 
@@ -19,7 +20,7 @@ public class GameEngine : MonoBehaviour
         Application.targetFrameRate = 60;
     }
 
-    // Freezing or slowing time right at the moment of an impact to create the impression that something hits harder, or for dramatic effect.
+    // Freezing or slowing time right at the moment of an impact
     public static void SetHitStop(float _pow)
     {
         if (_pow > hitStop) { hitStop = _pow;  }
@@ -58,27 +59,27 @@ public class GameEngine : MonoBehaviour
         */
     }
 
-    public InputBuffer playerInputBuffer;
+    public InputBuffer inputBuffer;
     private void DisplayBuffer()
     {
         int xSpace = 20;
         int ySpace = 25;
         //GUI.Label(new Rect(10, 10, 100, 20), "Hello World!");
 
-        for (int i = 0; i < playerInputBuffer.inputList.Count; i++)
+        for (int i = 0; i < inputBuffer.buffer.Count; i++)
         {
-            GUI.Label(new Rect(xSpace, i * ySpace, 100, 20), playerInputBuffer.inputList[i].button + ":");
-            for (int j = 0; j < playerInputBuffer.inputList[i].buffer.Count; j++)
+            GUI.Label(new Rect(xSpace, i * ySpace, 100, 20), inputBuffer.buffer[i].rawInputs[i] + ":");
+            for (int j = 0; j < inputBuffer.buffer[i].rawInputs.Count; j++)
             {
-                if (playerInputBuffer.inputList[i].buffer[i].used)
-                { GUI.Label(new Rect(j * xSpace + 100, i * ySpace, 100, 20), playerInputBuffer.inputList[i].buffer[j].hold.ToString() + "*"); }
-                else { GUI.Label(new Rect(j * xSpace + 50, i * ySpace, 100, 20), playerInputBuffer.inputList[i].buffer[j].hold.ToString()); }
+                if (inputBuffer.buffer[i].rawInputs[j].used)
+                { GUI.Label(new Rect(j * xSpace + 100, i * ySpace, 100, 20), inputBuffer.buffer[i].rawInputs[j].hold.ToString() + "*"); }
+                else { GUI.Label(new Rect(j * xSpace + 50, i * ySpace, 100, 20), inputBuffer.buffer[i].rawInputs[j].hold.ToString()); }
             }
         }
     }
 
     private void OnGUI()
     {
-        DisplayBuffer();
+        //DisplayBuffer();
     }
 }

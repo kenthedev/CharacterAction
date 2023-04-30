@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Core Data", menuName = "Character Action/Core Data")]
+[CreateAssetMenu(fileName = "Core Data", menuName = "Character Action/Core Data", order = 1)]
 [System.Serializable]
 public class CoreData : ScriptableObject
 {
@@ -11,9 +11,18 @@ public class CoreData : ScriptableObject
 
     public List<CharacterScript> characterScripts;
 
-    public List<InputCommand> commands;
+    public List<CommandState> commandStates;
+
+    // public List<CommandCondition> commandConditions
 
     public List<GameObject> globalPrefabs;
+
+    // public List<MoveList> globalMoveLists;
+
+    // Raw Inputs
+    public List<RawInput> rawInputs; // public List<RawInput> rawInputs;
+    // public List<MotionCommand> motionCommands;
+
 
     // Save Files
 
@@ -47,12 +56,46 @@ public class CoreData : ScriptableObject
         return _names;
     }
 
-    public string[] GetCommandNames()
+    public string[] GetCommandStateNames()
     {
-        string[] _names = new string[commands.Count];
+        string[] _names = new string[commandStates.Count];
         for (int i = 0; i < _names.Length; i++)
         {
-            _names[i] = commands[i].inputString;
+            _names[i] = commandStates[i].stateName.ToString();
+        }
+        return _names;
+    }
+
+    public string[] GetFollowUpNames(int _commandState, bool _deleteField)
+    {
+        int nameCount = commandStates[_commandState].commandSteps.Count;
+        if (_deleteField) { nameCount += 2; }
+        string[] _names = new string[nameCount];
+        for (int i = 0; i < _names.Length; i++)
+        {
+            if (i < _names.Length - 2)
+            {
+                _names[i] = commandStates[_commandState].commandSteps[i].idIndex.ToString();
+            }
+            else if (i < _names.Length - 1)
+            {
+                _names[i] = "+ ADD";
+            }
+            else
+            {
+                _names[i] = "- DELETE";
+            }
+        }
+
+        return _names;
+    }
+
+    public string[] GetRawInputNames()
+    {
+        string[] _names = new string[rawInputs.Count];
+        for (int i = 0; i < _names.Length; i++)
+        {
+            _names[i] = rawInputs[i].name;
         }
         return _names;
     }
