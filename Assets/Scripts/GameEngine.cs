@@ -8,9 +8,13 @@ public class GameEngine : MonoBehaviour
     public static CoreData coreData;
 
     public static float hitStop; // hitPause
-    public float deadZone;
+    public float deadZone = 0.2f;
+    public CharacterObject mainCharacter;
 
     public static GameEngine gameEngine;
+
+    public int globalMovelistIndex;
+     
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +44,18 @@ public class GameEngine : MonoBehaviour
         return GameObject.Find("Player");
     }
 
+    public MoveList CurrentMoveList()
+    {
+        return coreData.moveLists[globalMovelistIndex];
+    }
+
+    public void ToggleMoveList() // could do this for Spectre's Form Change
+    {
+        globalMovelistIndex++;
+        if (globalMovelistIndex > coreData.moveLists.Count - 1) { globalMovelistIndex = 0; }
+        //if (globalMovelistIndex < 0) { globalMovelistIndex = coreData.moveLists.Count - 1; }
+    }
+
     public static void GlobalPrefab(int _index, GameObject _obj)
     {
         GameObject nextPrefab = Instantiate(coreData.globalPrefabs[_index], _obj.transform);
@@ -62,24 +78,40 @@ public class GameEngine : MonoBehaviour
     public InputBuffer inputBuffer;
     private void DisplayBuffer()
     {
-        int xSpace = 20;
-        int ySpace = 25;
-        //GUI.Label(new Rect(10, 10, 100, 20), "Hello World!");
+        int xSpace = 25;
+        int ySpace = 15;
 
-        for (int i = 0; i < inputBuffer.buffer.Count; i++)
+        for (int i = 0; i < inputBuffer.buttonCommandCheck.Count; i++)
         {
-            GUI.Label(new Rect(xSpace, i * ySpace, 100, 20), inputBuffer.buffer[i].rawInputs[i] + ":");
-            for (int j = 0; j < inputBuffer.buffer[i].rawInputs.Count; j++)
+            GUI.Label(new Rect(10f + (i * xSpace), 15f, 100, 20), inputBuffer.buttonCommandCheck[i].ToString());
+        }
+
+        for (int b = 0; b < inputBuffer.buffer.Count; b++)
+        {
+            for (int i = 0; i < inputBuffer.buffer[b].rawInputs.Count; i++)
             {
-                if (inputBuffer.buffer[i].rawInputs[j].used)
-                { GUI.Label(new Rect(j * xSpace + 100, i * ySpace, 100, 20), inputBuffer.buffer[i].rawInputs[j].hold.ToString() + "*"); }
-                else { GUI.Label(new Rect(j * xSpace + 50, i * ySpace, 100, 20), inputBuffer.buffer[i].rawInputs[j].hold.ToString()); }
+                if (inputBuffer.buffer[b].rawInputs[i].used)
+                {
+                    GUI.Label(new Rect(10f + (i * xSpace), 35f + (b * ySpace), 100, 20), inputBuffer.buffer[b].rawInputs[i].hold.ToString("0") + ">");
+                }
+                else
+                {
+                    GUI.Label(new Rect(10f + (i * xSpace), 35f + (b * ySpace), 100, 20), inputBuffer.buffer[b].rawInputs[i].hold.ToString("0"));
+                }
             }
         }
+
+        for (int m = 0; m < inputBuffer.motionCommandCheck.Count; m++)
+        {
+            GUI.Label(new Rect(500f - 25f, m * ySpace, 100, 20), inputBuffer.motionCommandCheck[m].ToString());
+            GUI.Label(new Rect(500f, m * ySpace, 100, 20), coreData.motionCommands[m].name);
+        }
+        
+        GUI.Label(new Rect(200f, 10f, 100, 20), CurrentMoveList().ToString());
     }
 
     private void OnGUI()
     {
-        //DisplayBuffer();
+        DisplayBuffer();
     }
 }

@@ -81,8 +81,8 @@ public class CharacterScript
 [System.Serializable]
 public class InputCommand
 {
-    //[IndexedItem(IndexedItemAttribute.IndexedItemType.MOTION_COMMAND)]
-    //public int motionCommand;
+    [IndexedItem(IndexedItemAttribute.IndexedItemType.MOTION_COMMAND)]
+    public int motionCommand;
 
     [IndexedItem(IndexedItemAttribute.IndexedItemType.RAW_INPUTS)]
     public int input;
@@ -90,17 +90,20 @@ public class InputCommand
     [IndexedItem(IndexedItemAttribute.IndexedItemType.STATES)]
     public int state;
 
-    // public List<int> inputs;
+    public List<int> inputs;
 }
 
-/*
 [System.Serializable]
 public class MoveList
 {
-    public string name;
-    public List<Commandstate> commandStates;
+    public string name = "<NEW MOVE LIST>";
+    public List<CommandState> commandStates = new List<CommandState>();
+
+    public MoveList()
+    {
+        commandStates.Add(new CommandState());
+    }
 }  
-*/
 
 [System.Serializable]
 public class CommandState
@@ -126,7 +129,7 @@ public class CommandState
     public CommandState()
     {
         commandSteps = new List<CommandStep>();
-        stateName = "NEW COMMAND STATE";
+        stateName = "<NEW COMMAND STATE>";
     }
 
     public CommandStep AddCommandStep()
@@ -135,8 +138,10 @@ public class CommandState
         {
             if (!s.activated) { s.activated = true; return s; }
         }
-        CommandStep nextStep = new CommandStep(commandSteps.Count);
-        nextStep.activated = true;
+        CommandStep nextStep = new CommandStep(commandSteps.Count)
+        {
+            activated = true
+        };
         commandSteps.Add(nextStep);
         return nextStep;
     }

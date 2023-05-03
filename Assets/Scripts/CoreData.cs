@@ -11,17 +11,19 @@ public class CoreData : ScriptableObject
 
     public List<CharacterScript> characterScripts;
 
-    public List<CommandState> commandStates;
+    //public List<CommandState> commandStates;
+
+    public List<MoveList> moveLists; // this is really a list of command states
 
     // public List<CommandCondition> commandConditions
 
     public List<GameObject> globalPrefabs;
 
-    // public List<MoveList> globalMoveLists;
-
     // Raw Inputs
-    public List<RawInput> rawInputs; // public List<RawInput> rawInputs;
-    // public List<MotionCommand> motionCommands;
+    public List<RawInput> rawInputs; 
+    public List<MotionCommand> motionCommands;
+
+    public int currentMovelistIndex;
 
 
     // Save Files
@@ -58,24 +60,24 @@ public class CoreData : ScriptableObject
 
     public string[] GetCommandStateNames()
     {
-        string[] _names = new string[commandStates.Count];
+        string[] _names = new string[moveLists[currentMovelistIndex].commandStates.Count];
         for (int i = 0; i < _names.Length; i++)
         {
-            _names[i] = commandStates[i].stateName.ToString();
+            _names[i] = moveLists[currentMovelistIndex].commandStates[i].stateName.ToString();
         }
         return _names;
     }
 
     public string[] GetFollowUpNames(int _commandState, bool _deleteField)
     {
-        int nameCount = commandStates[_commandState].commandSteps.Count;
+        int nameCount = moveLists[currentMovelistIndex].commandStates[_commandState].commandSteps.Count;
         if (_deleteField) { nameCount += 2; }
         string[] _names = new string[nameCount];
         for (int i = 0; i < _names.Length; i++)
         {
             if (i < _names.Length - 2)
             {
-                _names[i] = commandStates[_commandState].commandSteps[i].idIndex.ToString();
+                _names[i] = moveLists[currentMovelistIndex].commandStates[_commandState].commandSteps[i].idIndex.ToString();
             }
             else if (i < _names.Length - 1)
             {
@@ -96,6 +98,26 @@ public class CoreData : ScriptableObject
         for (int i = 0; i < _names.Length; i++)
         {
             _names[i] = rawInputs[i].name;
+        }
+        return _names;
+    }
+
+    public string[] GetMotionCommandNames()
+    {
+        string[] _names = new string[motionCommands.Count];
+        for (int i = 0; i < _names.Length; i++)
+        {
+            _names[i] = motionCommands[i].name;
+        }
+        return _names;
+    }
+
+    public string[] GetMoveListNames()
+    {
+        string[] _names = new string[moveLists.Count];
+        for (int i = 0; i < _names.Length; i++)
+        {
+            _names[i] = moveLists[i].name.ToString();
         }
         return _names;
     }

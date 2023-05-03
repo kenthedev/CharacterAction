@@ -829,6 +829,8 @@ MonoBehaviour:
   deadzone: 0.2
   moveSpeed: 0.01
   jumpPow: 0.5
+  currentCommandState: 0
+  currentCommandStep: 0
   hitAniX: 0
   hitAniY: 0
   hitStun: 0
@@ -1124,6 +1126,8 @@ MonoBehaviour:
   deadzone: 0.2
   moveSpeed: 0.01
   jumpPow: 0.5
+  currentCommandState: 0
+  currentCommandStep: 0
   hitAniX: 0
   hitAniY: 0
   hitStun: 0
@@ -1464,6 +1468,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coreDataObject: {fileID: 11400000, guid: 900b1adea194e2c4e8a3711d5e8ca709, type: 2}
+  deadZone: 0.1
+  mainCharacter: {fileID: 1249337162}
+  globalMovelist: 0
 --- !u!4 &1744798900
 Transform:
   m_ObjectHideFlags: 0

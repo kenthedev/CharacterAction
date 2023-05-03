@@ -1,22 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InputBuffer
 {
-    //public static string[] rawInputList = new string[]
-    //{
-    //    "Jump",
-    //    "Action",
-    //    "Light Attack",
-    //    "Heavy Attack"
-    //};
 
     public List<InputBufferFrame> buffer; // = new List<InputBufferFrame>();
     public static int bufferWindow = 25;
 
     public List<int> buttonCommandCheck;
-    //public List<int> motionCommandCheck;
+    public List<int> motionCommandCheck;
 
     void InitializeBuffer()
     {
@@ -34,13 +28,13 @@ public class InputBuffer
             buttonCommandCheck.Add(-1);
         }
 
-        /*
+        
         motionCommandCheck = new List<int>();
         for (int i = 0; i < GameEngine.coreData.motionCommands.Count; i++)
         {
             motionCommandCheck.Add(-1);
         }
-        */
+        
     }
 
     public void Update()
@@ -73,6 +67,18 @@ public class InputBuffer
                 if (buffer[b].rawInputs[r].CanExecute()) { buttonCommandCheck[r] = b; }
             }
             if (GameEngine.coreData.rawInputs[r].inputType == RawInput.InputType.IGNORE) { buttonCommandCheck[r] = 0; }
+        }
+
+        for (int m = 0; m < motionCommandCheck.Count; m++)
+        {
+            motionCommandCheck[m] = -1;
+            GameEngine.coreData.motionCommands[m].checkStep = 0;
+            GameEngine.coreData.motionCommands[m].curAngle = 0;
+            for (int b = 0; b < buffer.Count; b++)
+            {
+                if (GameEngine.coreData.motionCommands[m].TestCheck(buffer[b].rawInputs[4].value, buffer[b].rawInputs[5].value))
+                { motionCommandCheck[m] = 1; break; }
+            }           
         }
     }
 
@@ -186,6 +192,85 @@ public class RawInput
     public InputType inputType;
     public string name;
 }
+
+[System.Serializable]
+public class MotionCommand
+{
+    public string name;
+    public int motionWindow;
+    public int confirmWindow;
+    //[IndexedItem(IndexedItemAttribute.IndexedItemType.MOTION_COMMAND_STEP)]
+    public List<MotionCommandDirection> commands;
+    public bool clean;
+    public bool anyOrder;
+
+    public int checkStep;
+
+    public int angleChange;
+
+    public float prevAngle;
+    public float curAngle;
+
+    public bool TestCheck(float _x, float _y) // (MotionCommandDirection _dir)
+    {
+        if (angleChange > 0)
+        {
+            GetNumPadDirection(_x, _y);
+            if (curAngle >= angleChange) { return true; }
+        }
+        else
+        {
+            if (commands == null) { return true; }
+
+            if (checkStep >= commands.Count) { return true; }
+            if (commands[checkStep] == GetNumPadDirection(_x, _y)) { checkStep++; }
+        }
+        return false;
+    }
+
+    public enum MotionCommandDirection
+    { 
+        NEUTRAL, FORWARD, BACK, SIDE, ANGLE_CHANGE
+    }
+
+    public MotionCommandDirection GetNumPadDirection(float _x, float _y) // doing this relative to the character & camera screen space
+    {
+        if (Mathf.Abs(_x) > GameEngine.gameEngine.deadZone || Mathf.Abs(_y) > GameEngine.gameEngine.deadZone)
+        {
+            Vector3 charForward = GameEngine.gameEngine.mainCharacter.character.transform.forward;
+            Vector3 stickForward = new Vector3(); // = buffer[buffer.Count - 1].stick;
+            Vector3 camForward = Camera.main.transform.forward;
+
+            camForward.y = 0;
+            camForward.Normalize();
+            stickForward += camForward * _y;
+
+            stickForward += Camera.main.transform.right * _x;
+            stickForward.y = 0;
+            stickForward.Normalize();
+
+            float _stickAngle = Vector2.Angle(new Vector2(charForward.x, charForward.z), new Vector2(stickForward.x, stickForward.z));
+
+            if (angleChange > 0)
+            {
+                _stickAngle = Vector2.Angle(new Vector2(0f, 1f), new Vector2(stickForward.x, stickForward.z));
+                curAngle += Mathf.Abs(_stickAngle - prevAngle);
+                prevAngle = _stickAngle;
+                return MotionCommandDirection.ANGLE_CHANGE;
+            }
+
+            if (_stickAngle < 45) { return MotionCommandDirection.FORWARD; }
+            else if (_stickAngle < 135) { return MotionCommandDirection.SIDE; }
+            else { return MotionCommandDirection.BACK; }
+        }
+
+        return MotionCommandDirection.NEUTRAL;
+    }
+}
+
+//[System.Serializable]
+
+
 
 
 

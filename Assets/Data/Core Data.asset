@@ -193,84 +193,105 @@ MonoBehaviour:
     name: Jump
   - index: 0
     name: FaceStick
-  commandStates:
-  - stateName: Grounded
-    aerial: 0
-    explicitState: 0
-    state: 0
-    commandSteps:
-    - idIndex: 0
-      priority: 0
-      command:
-        input: 0
-        state: 0
-      followUps: 010000000200000003000000
-      strict: 0
-      myRect:
-        serializedVersion: 2
-        x: 8
-        y: 113
-        width: 240
-        height: 30
-      activated: 1
-    - idIndex: 1
-      priority: 0
-      command:
-        input: 0
-        state: 1
-      followUps: 
-      strict: 0
-      myRect:
-        serializedVersion: 2
-        x: 303
-        y: 43
-        width: 240
-        height: 30
-      activated: 1
-    - idIndex: 2
-      priority: 0
-      command:
-        input: 2
-        state: 3
-      followUps: 04000000
-      strict: 0
-      myRect:
-        serializedVersion: 2
-        x: 308
-        y: 110
-        width: 240
-        height: 30
-      activated: 1
-    - idIndex: 3
-      priority: 0
-      command:
-        input: 3
-        state: 4
-      followUps: 
-      strict: 0
-      myRect:
-        serializedVersion: 2
-        x: 314
-        y: 188
-        width: 240
-        height: 30
-      activated: 1
-    - idIndex: 4
-      priority: 0
-      command:
-        input: 2
-        state: 4
-      followUps: 
-      strict: 0
-      myRect:
-        serializedVersion: 2
-        x: 619
-        y: 105
-        width: 240
-        height: 30
-      activated: 1
-    omitList: 04000000
-    nextFollowups: 010000000200000003000000
+  moveLists:
+  - name: Unarmed
+    commandStates:
+    - stateName: Grounded
+      aerial: 0
+      explicitState: 0
+      state: 0
+      commandSteps:
+      - idIndex: 0
+        priority: 0
+        command:
+          motionCommand: 0
+          input: 0
+          state: 0
+          inputs: 
+        followUps: 01000000
+        strict: 0
+        myRect:
+          serializedVersion: 2
+          x: 107
+          y: 55
+          width: 175
+          height: 50
+        activated: 1
+      - idIndex: 1
+        priority: 0
+        command:
+          motionCommand: 2
+          input: 2
+          state: 0
+          inputs: 
+        followUps: 
+        strict: 0
+        myRect:
+          serializedVersion: 2
+          x: 168
+          y: 43
+          width: 175
+          height: 50
+        activated: 1
+      omitList: 
+      nextFollowups: 01000000
+  - name: Sword
+    commandStates:
+    - stateName: Grounded
+      aerial: 0
+      explicitState: 0
+      state: 0
+      commandSteps:
+      - idIndex: 0
+        priority: 0
+        command:
+          motionCommand: 0
+          input: 0
+          state: 0
+          inputs: 
+        followUps: 0100000002000000
+        strict: 0
+        myRect:
+          serializedVersion: 2
+          x: 50
+          y: 50
+          width: 200
+          height: 200
+        activated: 1
+      - idIndex: 1
+        priority: 0
+        command:
+          motionCommand: 2
+          input: 2
+          state: 3
+          inputs: 
+        followUps: 
+        strict: 0
+        myRect:
+          serializedVersion: 2
+          x: 50
+          y: 50
+          width: 175
+          height: 50
+        activated: 1
+      - idIndex: 2
+        priority: 0
+        command:
+          motionCommand: 2
+          input: 2
+          state: 3
+          inputs: 
+        followUps: 
+        strict: 0
+        myRect:
+          serializedVersion: 2
+          x: 292
+          y: 48
+          width: 175
+          height: 50
+        activated: 1
+      omitList: 
+      nextFollowups: 0100000002000000
   globalPrefabs: []
   rawInputs:
   - inputType: 0
@@ -281,3 +302,91 @@ MonoBehaviour:
     name: Light Attack
   - inputType: 0
     name: Heavy Attack
+  - inputType: 1
+    name: Ghost
+  - inputType: 0
+    name: Burnout
+  - inputType: 0
+    name: Form Change
+  motionCommands:
+  - name: None
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 00000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 1
+    angleChange: 0
+    prevAngle: 0
+    curAngle: 0
+  - name: '>>'
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 00000000010000000000000001000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 1
+    angleChange: 0
+    prevAngle: 0
+    curAngle: 0
+  - name: <>
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 00000000020000000000000001000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 1
+    angleChange: 0
+    prevAngle: 0
+    curAngle: 0
+  - name: '>'
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 0000000001000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 1
+    angleChange: 0
+    prevAngle: 0
+    curAngle: 0
+  - name: <
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 0000000002000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 1
+    angleChange: 0
+    prevAngle: 0
+    curAngle: 0
+  - name: '><'
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 00000000010000000000000002000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 1
+    angleChange: 0
+    prevAngle: 0
+    curAngle: 0
+  - name: 360
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 04000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 0
+    angleChange: 360
+    prevAngle: 103.03839
+    curAngle: 0
+  - name: '>>>'
+    motionWindow: 0
+    confirmWindow: 0
+    commands: 000000000100000000000000010000000000000001000000
+    clean: 0
+    anyOrder: 0
+    checkStep: 1
+    angleChange: 0
+    prevAngle: 0
+    curAngle: 0
+  currentMovelistIndex: 0

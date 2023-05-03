@@ -436,9 +436,9 @@ public class CharacterObject : MonoBehaviour
     public void GetCommandState()
     {
         currentCommandState = 0;
-        for (int c = 0; c < GameEngine.coreData.commandStates.Count; c++) // (CommandState s in GameEngine.coreData.commandStates)
+        for (int c = 0; c < GameEngine.gameEngine.CurrentMoveList().commandStates.Count; c++) // (CommandState s in GameEngine.coreData.commandStates)
         {
-            CommandState s = GameEngine.coreData.commandStates[c];
+            CommandState s = GameEngine.gameEngine.CurrentMoveList().commandStates[c];
             if (s.aerial == aerialFlag)
             {
                 currentCommandState = c;
@@ -451,6 +451,9 @@ public class CharacterObject : MonoBehaviour
     
     void UpdateInput()
     {
+        if (Input.GetButtonDown("Form Change")) { GameEngine.gameEngine.ToggleMoveList();
+            Debug.Log("Form Change!"); }
+        
         leftStick = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         // if (Input.GetButton("RB")) { targeting = true; }
@@ -461,7 +464,7 @@ public class CharacterObject : MonoBehaviour
         bool startState = false;
 
         GetCommandState();
-        CommandState comState = GameEngine.coreData.commandStates[currentCommandState];
+        CommandState comState = GameEngine.gameEngine.CurrentMoveList().commandStates[currentCommandState];
 
         if (currentCommandStep >= comState.commandSteps.Count) { currentCommandStep = 0; } // Change this to state-specific or even commandstep specific variables
 
@@ -513,7 +516,7 @@ public class CharacterObject : MonoBehaviour
     public bool CheckInputCommand(InputCommand _in)
     {
         if (inputBuffer.buttonCommandCheck[_in.input] < 0) { return false; }
-        //if (inputBuffer.motionCommandCheck[_in.motionCommand] < 0) { return false; }
+        if (inputBuffer.motionCommandCheck[_in.motionCommand] < 0) { return false; }
         return true;
     }
 
