@@ -212,28 +212,44 @@ MonoBehaviour:
         strict: 0
         myRect:
           serializedVersion: 2
-          x: 107
-          y: 55
+          x: 32
+          y: 20
           width: 175
           height: 50
         activated: 1
       - idIndex: 1
         priority: 0
         command:
-          motionCommand: 2
-          input: 2
+          motionCommand: 0
+          input: 0
+          state: 0
+          inputs: 
+        followUps: 02000000
+        strict: 0
+        myRect:
+          serializedVersion: 2
+          x: 248
+          y: 35
+          width: 175
+          height: 50
+        activated: 1
+      - idIndex: 2
+        priority: 0
+        command:
+          motionCommand: 0
+          input: 0
           state: 0
           inputs: 
         followUps: 
         strict: 0
         myRect:
           serializedVersion: 2
-          x: 168
-          y: 43
+          x: 507
+          y: 35
           width: 175
           height: 50
         activated: 1
-      omitList: 
+      omitList: 02000000
       nextFollowups: 01000000
   - name: Sword
     commandStates:
@@ -377,7 +393,7 @@ MonoBehaviour:
     anyOrder: 0
     checkStep: 0
     angleChange: 360
-    prevAngle: 103.03839
+    prevAngle: 68.91872
     curAngle: 0
   - name: '>>>'
     motionWindow: 0

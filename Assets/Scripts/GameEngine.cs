@@ -53,7 +53,6 @@ public class GameEngine : MonoBehaviour
     {
         globalMovelistIndex++;
         if (globalMovelistIndex > coreData.moveLists.Count - 1) { globalMovelistIndex = 0; }
-        //if (globalMovelistIndex < 0) { globalMovelistIndex = coreData.moveLists.Count - 1; }
     }
 
     public static void GlobalPrefab(int _index, GameObject _obj)

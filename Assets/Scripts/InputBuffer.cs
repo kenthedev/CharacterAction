@@ -167,7 +167,7 @@ public class InputBufferFrameState
         if (hold > 0) { hold = -1; used = false; }
         else { hold = 0; }
         value = 0;
-        // GameEgnine.gameEngine.playerInputBuffer.buttonCommandCheck[rawInput]  = 0;
+        // GameEngine.gameEngine.inputBuffer.buttonCommandCheck[rawInput]  = 0;
     }
 
     public bool CanExecute()

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class ChainEditorWindow : EditorWindow
+public class MoveListEditorWindow : EditorWindow
 {
     [MenuItem("Window/Movelist Editor")]
     static void Init()
     {
-        EditorWindow.GetWindow(typeof(ChainEditorWindow), false, "MoveList Editor");
+        EditorWindow editorWindow = EditorWindow.GetWindow(typeof(MoveListEditorWindow), false, "MoveList Editor");
+        editorWindow.Show();
     }
 
     public int currentCommandStateIndex;
@@ -29,6 +30,7 @@ public class ChainEditorWindow : EditorWindow
     private void OnGUI()
     {
         // GUI.DrawTexture(new Rect(0, 0, maxSize.x, maxSize.y), Texture2D.blackTexture, ScaleMode.StretchToFill);
+        
         if (coreData == null)
         {
             foreach (string guid in AssetDatabase.FindAssets("t: CoreData"))
@@ -145,7 +147,7 @@ public class ChainEditorWindow : EditorWindow
 
         BeginWindows();
         sizerStep = 30;
-        // GUI.backgroundColor = Color.black;
+        GUI.backgroundColor = Color.black;
         int cCounter = 0;
         foreach (CommandStep c in currentCommandStateObject.commandSteps)
         {
@@ -173,13 +175,34 @@ public class ChainEditorWindow : EditorWindow
 
         EditorGUI.LabelField(new Rect(6, 7, 35, 20), windowID.ToString());
 
+ 
+        // Motion Command Button
         currentCommandStateObject.commandSteps[windowID].command.motionCommand =
-            EditorGUI.IntPopup(new Rect(25, 5, 50, 20), currentCommandStateObject.commandSteps[windowID].command.input, coreData.GetMotionCommandNames(), null, EditorStyles.miniButtonLeft);
-
+            EditorGUI.IntPopup(
+                new Rect(25, 5, 50, 20), // 25 5 50 20
+                currentCommandStateObject.commandSteps[windowID].command.input, 
+                coreData.GetMotionCommandNames(), 
+                null, 
+                EditorStyles.miniButtonLeft);
+       
+        // Raw Input Button
         currentCommandStateObject.commandSteps[windowID].command.input =
-            EditorGUI.IntPopup(new Rect(75, 5, 65, 20), currentCommandStateObject.commandSteps[windowID].command.input, coreData.GetRawInputNames(), null, EditorStyles.miniButtonMid);
+            EditorGUI.IntPopup(
+                new Rect(75, 5, 85, 40),
+                currentCommandStateObject.commandSteps[windowID].command.input,
+                coreData.GetRawInputNames(),
+                null,
+                EditorStyles.miniButtonMid); 
+
+        // Command State Button
         currentCommandStateObject.commandSteps[windowID].command.state =
-            EditorGUI.IntPopup(new Rect(40, 26, 70, 20), currentCommandStateObject.commandSteps[windowID].command.state, coreData.GetStateNames(), null, EditorStyles.miniButton);
+            EditorGUI.IntPopup(
+                new Rect(40, 26, 85, 20), 
+                currentCommandStateObject.commandSteps[windowID].command.state, 
+                coreData.GetStateNames(), 
+                null, 
+                EditorStyles.miniButton);
+ 
 
         currentCommandStateObject.commandSteps[windowID].priority =
             EditorGUI.IntField(new Rect(6, 26, 20, 20), currentCommandStateObject.commandSteps[windowID].priority);
