@@ -258,13 +258,14 @@ public class CharacterObject : MonoBehaviour
 
     void UpdateStateEvents()
     {
+        int _curEv = 0;
         foreach(StateEvent _ev in GameEngine.coreData.characterStates[currentState].events)
         { 
             if (currentStateTime >= _ev.start && currentStateTime <= _ev.end)
             {
-                DoEventScript(_ev.script, _ev.variable);
+                DoEventScript(_ev.script, currentState, _curEv, _ev.parameters);
             }
-            
+            _curEv++;
         }
     }
 
@@ -322,33 +323,35 @@ public class CharacterObject : MonoBehaviour
         }
     }
 
-    void DoEventScript(int _index, float _var)
+    void DoEventScript(int _index, int _actIndex, int _evIndex, List<ScriptParameter> _params)
     {
+        if (_params == null) { return; }
+        if (_params.Count <= 0) { return; }
         switch (_index)
         {
-            case 0: 
-                VelocityY(_var);
+            case 0:
+                VelocityY(_params[0].val);
                 break;
             case 1:
-                FrontVelocity(_var);
+                FrontVelocity(_params[0].val);
                 break;
             case 3:
-                CameraRelativeStickMove(_var);
+                CameraRelativeStickMove(_params[0].val);
                 break;
             case 4:
                 GettingHit();
                 break;
             case 5:
-                GlobalPrefab(_var);
+                GlobalPrefab(_params[0].val, _actIndex, _evIndex);
                 break;
             case 6:
-                CanCancel(_var);
+                CanCancel(_params[0].val);
                 break;
             case 7:
-                Jump(_var);
+                Jump(_params[0].val);
                 break;
             case 8:
-                FaceStick(_var);
+                FaceStick(_params[0].val);
                 break;
         }
     }
@@ -384,7 +387,7 @@ public class CharacterObject : MonoBehaviour
         else { canCancel = false; }
     }
 
-    void GlobalPrefab(float _index)
+    void GlobalPrefab(float _index, int _action, int _event)
     {
         GameEngine.GlobalPrefab((int)_index, gameObject);
     }
@@ -444,6 +447,7 @@ public class CharacterObject : MonoBehaviour
                 currentCommandState = c;
                 return;
             }
+            // Can add more command state checks
         }
     }
 

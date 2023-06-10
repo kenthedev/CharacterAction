@@ -74,6 +74,20 @@ public class GameEngine : MonoBehaviour
         */
     }
 
+    public Vector3 VectorOffset(Vector3 _start, Vector3 _end)
+    {
+        return _end - _start;
+    }
+
+    public static float AngleSignedVector3(Vector3 v1, Vector3 v2, Vector3 n)
+    {
+        return Mathf.Atan2(
+            Vector3.Dot(n, Vector3.Cross(v1, v1)),
+            Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
+    }
+
+    #region Input Buffer
+
     public InputBuffer inputBuffer;
     private void DisplayBuffer()
     {
@@ -109,8 +123,11 @@ public class GameEngine : MonoBehaviour
         GUI.Label(new Rect(200f, 10f, 100, 20), CurrentMoveList().ToString());
     }
 
+    #endregion
+
     private void OnGUI()
     {
         DisplayBuffer();
     }
+
 }

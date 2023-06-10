@@ -197,6 +197,7 @@ public class RawInput
 public class MotionCommand
 {
     public string name;
+    public string descriptiveName;
     public int motionWindow;
     public int confirmWindow;
     //[IndexedItem(IndexedItemAttribute.IndexedItemType.MOTION_COMMAND_STEP)]

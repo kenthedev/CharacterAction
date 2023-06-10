@@ -53,20 +53,22 @@ public class StateEvent
 {
     public float start;
     public float end;
-    public float variable;
+    //public float variable;
 
     [IndexedItem(IndexedItemAttribute.IndexedItemType.SCRIPTS)]
     public int script;
+
+    public List<ScriptParameter> parameters;
 }
 
-/*
+
 [System.Serializable]
 public class ScriptParameter
 {
     public string name;
     public float val;
 }
-*/
+
 
 [System.Serializable]
 public class CharacterScript
@@ -75,7 +77,8 @@ public class CharacterScript
     public int index;
 
     public string name;
-    //public float variable; // probs a list of variables?
+
+    public List<ScriptParameter> parameters;
 }
 
 [System.Serializable]
