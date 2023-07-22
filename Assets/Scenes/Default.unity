@@ -311,8 +311,8 @@ Canvas:
   m_GameObject: {fileID: 107496547}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 1672675080372794432}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -1470,7 +1470,7 @@ MonoBehaviour:
   coreDataObject: {fileID: 11400000, guid: 900b1adea194e2c4e8a3711d5e8ca709, type: 2}
   deadZone: 0.1
   mainCharacter: {fileID: 1249337162}
-  globalMovelist: 0
+  globalMovelistIndex: 0
 --- !u!4 &1744798900
 Transform:
   m_ObjectHideFlags: 0
@@ -1869,7 +1869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 1249337162}
-  stateIndex: 4
+  stateIndex: 0
 --- !u!4 &23104708873092706
 Transform:
   m_ObjectHideFlags: 0
@@ -2201,6 +2201,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1314738019763015490, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1672675080790710603, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1672675080790710603, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1672675080790710603, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1672675080790710604, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_Depth
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 1672675082120079641, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -2257,8 +2277,69 @@ PrefabInstance:
       propertyPath: m_Name
       value: ThirdPersonCameraPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 2464674611290457435, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_Depth
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2464674611290457435, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: far clip plane
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 2464674611290457435, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_RenderingPath
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2464674611290457435, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_OcclusionCulling
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3152384264375829715, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3152384264375829715, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 3294047530561488447, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_Depth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3294047530561488447, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_ClearFlags
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3294047530561488447, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: orthographic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3294047530561488447, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3652171146539204288, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_ClearFlags
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3652171146539204288, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8580604973897688462, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_Name
+      value: HitsparkCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 8580604973897688462, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+--- !u!20 &1672675080372794432 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3294047530561488447, guid: 6f234acd446ec0f45a8966687f70e474, type: 3}
+  m_PrefabInstance: {fileID: 1672675080372794431}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1741689032106603858
 Transform:
   m_ObjectHideFlags: 0

@@ -30,9 +30,12 @@ public class CharacterStateEditorWindow : EditorWindow
         scrollView = GUILayout.BeginScrollView(scrollView);
         GUILayout.BeginHorizontal();
         GUILayout.Label(currentStateIndex.ToString() + " : " + currentCharacterState.stateName);
-        currentStateIndex = EditorGUILayout.Popup(currentStateIndex, coreData.GetStateNames());
+        currentStateIndex = EditorGUILayout.Popup(
+            currentStateIndex, coreData.GetStateNames());
         currentCharacterState = coreData.characterStates[currentStateIndex];
         
+
+
         GUILayout.EndHorizontal();
 
         // Animation
@@ -53,10 +56,14 @@ public class CharacterStateEditorWindow : EditorWindow
         eventFold = EditorGUILayout.Foldout(eventFold, "Events");
         if (eventFold)
         {
+            int deleteEvent = -1;
+            //if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.Width(35))) { currentCharacterState.events.Add(new StateEvent()); }
             for (int e = 0; e < currentCharacterState.events.Count; e++)
             {
                 StateEvent currentEvent = currentCharacterState.events[e];
                 GUILayout.BeginHorizontal();
+                if (GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(25))) { deleteEvent = e; }
+                currentEvent.enabled = EditorGUILayout.Toggle(currentEvent.enabled, GUILayout.Width(35));
                 GUILayout.Label(e.ToString() + " : ", GUILayout.Width(25));
                 EditorGUILayout.MinMaxSlider(ref currentEvent.start, ref currentEvent.end, 0f, currentCharacterState.length, GUILayout.Width(200));
                 GUILayout.Label(Mathf.Round(currentEvent.start).ToString() + " ~ " + Mathf.Round(currentEvent.end).ToString(), GUILayout.Width(75));
@@ -85,6 +92,9 @@ public class CharacterStateEditorWindow : EditorWindow
                 GUILayout.EndHorizontal();
                 GUILayout.Label("");
             }
+            if (deleteEvent > -1) { currentCharacterState.events.RemoveAt(deleteEvent); }
+            if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.Width(35))) { currentCharacterState.events.Add(new StateEvent()); }
+            GUILayout.Label("");
         }
 
         GUILayout.EndScrollView();

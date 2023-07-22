@@ -55,10 +55,18 @@ public class StateEvent
     public float end;
     //public float variable;
 
+    public bool enabled = true;
+
     [IndexedItem(IndexedItemAttribute.IndexedItemType.SCRIPTS)]
     public int script;
 
     public List<ScriptParameter> parameters;
+
+    public StateEvent()
+    {
+        enabled = true;
+        parameters = new List<ScriptParameter>();
+    }
 }
 
 

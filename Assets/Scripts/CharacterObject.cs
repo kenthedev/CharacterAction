@@ -53,7 +53,6 @@ public class CharacterObject : MonoBehaviour
         {
             // Update Input Buffer
 
-
             // Update Input
             switch (controlType)
             {
@@ -261,9 +260,12 @@ public class CharacterObject : MonoBehaviour
         int _curEv = 0;
         foreach(StateEvent _ev in GameEngine.coreData.characterStates[currentState].events)
         { 
-            if (currentStateTime >= _ev.start && currentStateTime <= _ev.end)
+            if (_ev.enabled)
             {
-                DoEventScript(_ev.script, currentState, _curEv, _ev.parameters);
+                if (currentStateTime >= _ev.start && currentStateTime <= _ev.end)
+                {
+                    DoEventScript(_ev.script, currentState, _curEv, _ev.parameters);
+                }
             }
             _curEv++;
         }
@@ -351,6 +353,9 @@ public class CharacterObject : MonoBehaviour
                 Jump(_params[0].val);
                 break;
             case 8:
+                FaceVelocity();
+                break;
+            case 9:
                 FaceStick(_params[0].val);
                 break;
         }
@@ -456,7 +461,9 @@ public class CharacterObject : MonoBehaviour
     void UpdateInput()
     {
         if (Input.GetButtonDown("Form Change")) { GameEngine.gameEngine.ToggleMoveList();
-            Debug.Log("Form Change!"); }
+            Debug.Log("Form Change!");
+            Debug.Log(GameEngine.gameEngine.globalMovelistIndex);
+        }
         
         leftStick = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 

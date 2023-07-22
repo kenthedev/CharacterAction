@@ -87,6 +87,12 @@ public class MoveListEditorWindow : EditorWindow
         GUILayout.EndHorizontal();
         #endregion
 
+        #region Instructions
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("L to R: Motion Command, Raw Input, Command State", EditorStyles.boldLabel);
+        GUILayout.EndHorizontal();
+        #endregion
+
         #region Line Drawing Between Nodes
         scrollView = EditorGUILayout.BeginScrollView(scrollView);
         GUILayout.Label(currentMoveList.name + " Move List:", GUILayout.Height(2000), GUILayout.Width(2000));

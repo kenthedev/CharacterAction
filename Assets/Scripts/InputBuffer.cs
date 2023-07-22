@@ -85,7 +85,7 @@ public class InputBuffer
     public void UseInput(int _i)
     {
         buffer[buttonCommandCheck[_i]].rawInputs[_i].used = true;
-        // Debug.Log("used up!!!> : " + buttonCommandCheck[_i].ToString());
+        Debug.Log("used up!!!> : " + buttonCommandCheck[_i].ToString());
         buttonCommandCheck[_i] = -1;
         // buffer[buttonCommandCheck[_i]].rawInputs[_i].hold = -2;
     }

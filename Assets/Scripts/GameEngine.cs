@@ -57,7 +57,7 @@ public class GameEngine : MonoBehaviour
 
     public static void GlobalPrefab(int _index, GameObject _obj)
     {
-        GameObject nextPrefab = Instantiate(coreData.globalPrefabs[_index], _obj.transform);
+        GameObject nextPrefab = Instantiate(coreData.globalPrefabs[_index], _obj.transform.root);
         
         /*
         // If VFX
